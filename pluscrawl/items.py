@@ -8,11 +8,11 @@ from scrapy.item import Item, Field
 class PluscrawlItem(Item):
     # define the fields for your item here like:
     # name = Field()
-    URL=Field()
-    author=Field()
-    author_url=Field()
-    review_date=Field()
-    review_text=Field()
-    review_rate=Field()
-    eid=Field()
+    _id = Field()
+    name = Field()
+    work = Field()
+    edu = Field()
+    links = Field()
+    outfriends = Field()
+    infriends = Field()
     pass

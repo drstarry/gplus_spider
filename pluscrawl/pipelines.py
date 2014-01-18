@@ -5,17 +5,51 @@
 
 from pluscrawl.settings import *
 
+# Define your item pipelines here
+#
+# Don't forget to add your pipeline to the ITEM_PIPELINES setting
+# See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
+
+from scrapy.conf import settings
+from scrapy import log
+
 class PluscrawlPipeline(object):
     def process_item(self, item, spider):
-        URL=str(item['URL'])
-        author=str(item['author'])
-        author_url=str(item['author_url'])
-        review_date=str(item['review_date'])
-        review_rate=str(item['review_rate'])
-        review_text=str(item['review_text'])
-        eid=int(item['eid'])
-        query="""INSERT INTO placesresults (URL,author,author_url,review_text,text_rating,eid,review_date) VALUES ('%s','%s','%s','%s','%s','%s',date_sub(date(now()),interval %s))"""%(URL,author,author_url,review_text,review_rate,eid,review_date)
-        cursor.execute(query)
-        db.commit()
-
         return item
+
+# class MongoDBPipeline(object):
+#     def __init__(self):
+#         import pymongo
+
+#         connection = pymongo.Connection(settings['MONGODB_SERVER'], settings['MONGODB_PORT'])
+#         self.db = connection[settings['MONGODB_DB']]
+#         self.collection = self.db[settings['MONGODB_COLLECTION']]
+#         if self.__get_uniq_key() is not None:
+#             self.collection.create_index(self.__get_uniq_key(), unique=True)
+
+#     def process_item(self, item, spider):
+
+#         if self.__get_uniq_key() is None:
+#             self.collection.insert(dict(item))
+#         else:
+#             # print "Append friend for", item["_id"]
+#             # old_item = self.collection.find_one({"_id": item["_id"]})
+#             # if old_item is not None:
+#             #     for f in item["friend"]:
+#             #         old_item["friend"].append(f)
+#             # else:
+#             #     old_item = dict(item)
+#             # self.collection.update(
+#             #     {self.__get_uniq_key(): item[self.__get_uniq_key()]},
+#             #     old_item,
+#             #     upsert=True)
+#         log.msg("Item wrote to MongoDB database %s/%s" %
+#                 (settings['MONGODB_DB'], settings['MONGODB_COLLECTION']),
+#                 level=log.DEBUG, spider=spider)
+#         return item
+
+#     def __get_uniq_key(self):
+#         if not settings['MONGODB_UNIQ_KEY'] or settings['MONGODB_UNIQ_KEY'] == "":
+#             return None
+#         return settings['MONGODB_UNIQ_KEY']
+

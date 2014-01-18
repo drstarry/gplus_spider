@@ -22,5 +22,5 @@ USER_AGENT = "Mozilla/5.0 (Windows; U; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 2
 AUTOTHROTTLE_ENABLED= True
 #database connectivity
 
-conn=db = MySQLdb.connect(host="localhost",user="root",passwd="passme", db="cubator")
-cursor=db.cursor()
+# conn=db = MySQLdb.connect(host="localhost",user="root",passwd="passme", db="cubator")
+# cursor=db.cursor()
