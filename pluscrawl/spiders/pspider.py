@@ -26,7 +26,7 @@ class LoginSpider(BaseSpider):
         results=hxs.select('//div[@class="Ucb  lic d-k-l"]')
         for res in results:
             friendid = res.select('//div@oid').extract()[0]
-            friendname = res.select('//div[@clas="o0b"/a/text()').extract()[0]
+            friendname = res.select('//div[@clas="o0b"]/a/text()').extract()[0]
             friends.append({'id':friendid,'name':friendname})
         return friends
 
@@ -38,6 +38,7 @@ class LoginSpider(BaseSpider):
             return x[1]
         return None
 
+    # def get_page(self)
     def parse(self, response):
         print self.URL," ",self.eid
         print "starting phantomjs"
@@ -97,26 +98,31 @@ class LoginSpider(BaseSpider):
         # item['_id'] = self.get_id(response.url)
         # item['name'] = res.select('//div[@guidedhelpid = "profile_name"]/text()').extract()[0]
 
-        # print
+
 
         #work
-        # work_part = res.select('//div[@class = "wna"]')
-        # for x in work_part:
-        #     if x.select('/div[@class = Cr]/text()').extract() == "Occupation":
-        #         work = x.select('/div[@class = Cr]/text()').extract()
-        #         item['work'] = {"sta":"open","Occupation":work}
-        #     else:
-        #         item['work'] = {"privite":"false","Occupation":''}
+        work_part = res.select('//div[@class = "wna"]')
+        for x in work_part:
+            if x.select('//div[@class = Cr]/text()').extract() == "Occupation":
+                work = x.select('//div[@class = Cr]/text()').extract()
+                print work
+                # item['work'] = {"privite":"true","Occupation":work}
+            else:
+                print 'work:privite'
+                # item['work'] = {"privite":"false","Occupation":''}
 
         #edu
-        # edu_part = res.select('//div[@class = "Ee h5a vna Jqc"]')
-        # for x in edu_part:
-        #     try:
-        #         edu =  x.select('/div[@class = "PLa"]/text()').extract()
-        #     except:
-        #         item['edu'] = {"sta":"private","edu":[]}
-        #     else:
-        #         for x in edu:
+        edu_part = res.select('//div[@class = "Ee h5a vna Jqc"]')
+        for x in edu_part:
+            try:
+                edu =  x.select('//div[@class = "PLa"]/text()').extract()
+            except:
+                print 'edu:privite'
+                # item['edu'] = {"privite":"false","edu":[]}
+            else:
+                item['edu'] = {"privite":"false","edu":edu}
+
+        #links:hard to get......cry~
 
 
 

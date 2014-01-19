@@ -17,39 +17,40 @@ class PluscrawlPipeline(object):
     def process_item(self, item, spider):
         return item
 
-# class MongoDBPipeline(object):
-#     def __init__(self):
-#         import pymongo
+class MongoDBPipeline(object):
+    def __init__(self):
+        import pymongo
 
-#         connection = pymongo.Connection(settings['MONGODB_SERVER'], settings['MONGODB_PORT'])
-#         self.db = connection[settings['MONGODB_DB']]
-#         self.collection = self.db[settings['MONGODB_COLLECTION']]
-#         if self.__get_uniq_key() is not None:
-#             self.collection.create_index(self.__get_uniq_key(), unique=True)
+        connection = pymongo.Connection(settings['MONGODB_SERVER'], settings['MONGODB_PORT'])
+        self.db = connection[settings['MONGODB_DB']]
+        self.collection = self.db[settings['MONGODB_COLLECTION']]
+        if self.__get_uniq_key() is not None:
+            self.collection.create_index(self.__get_uniq_key(), unique=True)
 
-#     def process_item(self, item, spider):
+    def process_item(self, item, spider):
 
-#         if self.__get_uniq_key() is None:
-#             self.collection.insert(dict(item))
-#         else:
-#             # print "Append friend for", item["_id"]
-#             # old_item = self.collection.find_one({"_id": item["_id"]})
-#             # if old_item is not None:
-#             #     for f in item["friend"]:
-#             #         old_item["friend"].append(f)
-#             # else:
-#             #     old_item = dict(item)
-#             # self.collection.update(
-#             #     {self.__get_uniq_key(): item[self.__get_uniq_key()]},
-#             #     old_item,
-#             #     upsert=True)
-#         log.msg("Item wrote to MongoDB database %s/%s" %
-#                 (settings['MONGODB_DB'], settings['MONGODB_COLLECTION']),
-#                 level=log.DEBUG, spider=spider)
-#         return item
+        if self.__get_uniq_key() is None:
+            self.collection.insert(dict(item))
+        else:
+            #should not have redandent people due to the crawling method
+            print "Append friend for", item["_id"]
+            old_item = self.collection.find_one({"_id": item["_id"]})
+            if old_item is not None:
+                # for f in item["friend"]:
+                #     old_item["friend"].append(f)
+            else:
+                old_item = dict(item)
+            self.collection.update(
+                {self.__get_uniq_key(): item[self.__get_uniq_key()]},
+                old_item,
+                upsert=True)
+        log.msg("Item wrote to MongoDB database %s/%s" %
+                (settings['MONGODB_DB'], settings['MONGODB_COLLECTION']),
+                level=log.DEBUG, spider=spider)
+        return item
 
-#     def __get_uniq_key(self):
-#         if not settings['MONGODB_UNIQ_KEY'] or settings['MONGODB_UNIQ_KEY'] == "":
-#             return None
-#         return settings['MONGODB_UNIQ_KEY']
+    def __get_uniq_key(self):
+        if not settings['MONGODB_UNIQ_KEY'] or settings['MONGODB_UNIQ_KEY'] == "":
+            return None
+        return settings['MONGODB_UNIQ_KEY']
 
